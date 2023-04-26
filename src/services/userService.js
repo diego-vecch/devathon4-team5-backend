@@ -2,7 +2,7 @@ const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
 const User = require('../models/User')
 const { createResponse } = require('../utils/responseGenarator')
-// const { signToken } = require('../utils/jwtOperations')
+const { signToken } = require('../utils/jwtOperations')
 const { initUserSeguridad, verifyUser } = require('../utils/verificationManager')
 const { sendVerificationMail } = require('../utils/emailTransporter')
 const buildHostName = require('../utils/hostManager')
@@ -72,4 +72,48 @@ const verifyEmail = async (req) => {
 
   return createResponse(true, data, null, 200)
 }
-module.exports = { userRegister, verifyEmail }
+
+const loginUser = async (req) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return createResponse(false, null, errors.array(), 400)
+  }
+  // Usuario que solicita login desde el front-end
+  const { email, password } = req.body
+  // Buscar en la base de datos un usuario con ese email, si existe asignar a la constante userDB
+  const userDB = await User.findOne({ email })
+  // Si userDB existe:
+  if (userDB) {
+    // Comprobar que no este iniciado un proceso de cambio de contraseña, si es asi retornar error y solicitar terminar el procedimiento
+    if (userDB.security?.restorePassword) {
+      return createResponse(false, null, 'A password change has been requested and you must finish the process', 400)
+    }
+
+    // Si no esta en proceso de cambio de contraseña comparar las password, si no son iguales retornar un arror
+    if (!bcrypt.compareSync(password, userDB.password)) {
+      return createResponse(false, null, 'Invalid email o password', 401)
+    }
+
+    // Si el usuario no esta verificaco aun retornar error y un mensaje que solicite revisar el email
+    if (!userDB.security?.verified) {
+      return createResponse(false, null, MSG_NO_VERIFICADO, 400)
+    }
+
+    // Si paso las validaciones  crear el jwt token
+    const userToken = {
+      id: userDB._id,
+      name: userDB.name
+    }
+    const token = signToken(userToken)
+    const data = {
+      id: userDB._id,
+      name: userDB.name,
+      username: userDB.username,
+      token
+    }
+    return createResponse(true, data, null, 200)
+  }
+  return createResponse(false, null, 'Invalid email o password', 401)
+}
+
+module.exports = { userRegister, verifyEmail, loginUser }

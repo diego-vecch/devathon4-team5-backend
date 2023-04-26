@@ -9,7 +9,7 @@ const PORT = process.env.PORT
 
 app.use(express.json())
 
-app.use('/api/v1/', userRouter)
+app.use('/api/v1/users/', userRouter)
 app.get('/', (req, res) => {
   res.send("<h2>Let's Go team five!</h2>")
 })

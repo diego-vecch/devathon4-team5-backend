@@ -1,14 +1,17 @@
 const express = require('express')
 const userController = require('../../controllers/userController')
-const { registroValidator } = require('../../middlewares/validators')
+const { registroValidator, loginValidator } = require('../../middlewares/validators')
 // const tokenValidator = require('../../middlewares/tokenValidator')
-//, loginValidator, modifyUserValidator
+//, modifyUserValidator
 
 const userRouter = express.Router()
 // Ruta de registro de usuario:
-userRouter.route('/users/register').post(registroValidator, userController.userRegister)
+userRouter.route('/register').post(registroValidator, userController.userRegister)
 
 // Ruta que verifica el registro:
-userRouter.route('/users/verify/:cryptoToken').get(userController.verifyEmail)
+userRouter.route('/verify/:cryptoToken').get(userController.verifyEmail)
+
+// Ruta de login:
+userRouter.route('/login').post(loginValidator, userController.loginUser)
 
 module.exports = userRouter
