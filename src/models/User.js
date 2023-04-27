@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, version } = require('mongoose')
 
 const userSchema = Schema({
   name: {
@@ -17,6 +17,10 @@ const userSchema = Schema({
     type: String,
     required: true
   },
+  roles: {
+    type: String,
+    default: 'user'
+  },
   security: {
     verified: Boolean,
     cryptoToken: String,
@@ -30,10 +34,7 @@ const userSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'Comments'
   }],
-  roles: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Roles'
-  }],
+
   location: [{
     type: Schema.Types.ObjectId,
     ref: 'Location'

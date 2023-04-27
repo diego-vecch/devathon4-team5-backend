@@ -40,4 +40,10 @@ const loginUser = async (req, res, next) => {
     next(error)
   }
 }
-module.exports = { userRegister, verifyEmail, loginUser }
+
+const userList = async (req, res, nex) => {
+  return res.status(200).send({
+    success: true
+  })
+}
+module.exports = { userRegister, verifyEmail, loginUser, userList }

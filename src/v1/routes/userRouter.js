@@ -1,7 +1,8 @@
 const express = require('express')
 const userController = require('../../controllers/userController')
 const { registroValidator, loginValidator } = require('../../middlewares/validators')
-// const tokenValidator = require('../../middlewares/tokenValidator')
+
+const { tokenValidator, isModerator } = require('../../middlewares/tokenValidator')
 //, modifyUserValidator
 
 const userRouter = express.Router()
@@ -14,4 +15,6 @@ userRouter.route('/verify/:cryptoToken').get(userController.verifyEmail)
 // Ruta de login:
 userRouter.route('/login').post(loginValidator, userController.loginUser)
 
+// Ruta de prueba
+userRouter.get('/prueba', [tokenValidator, isModerator], userController.userList)
 module.exports = userRouter
