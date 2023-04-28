@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
 const User = require('../models/User')
+const Role = require('../models/Role')
 const { createResponse } = require('../utils/responseGenarator')
 const { signToken } = require('../utils/jwtOperations')
 const { initUserSeguridad, verifyUser } = require('../utils/verificationManager')
@@ -23,7 +24,7 @@ const userRegister = async (req) => {
     return createResponse(false, data, errors.array(), 400)
   }
 
-  const { username, email, password } = req.body
+  const { username, email, password, roles } = req.body
 
   const usernameExists = await User.findOne({ username })
 
@@ -33,6 +34,11 @@ const userRegister = async (req) => {
     return createResponse(false, data, 'Invalid Email/Username usernameExist service', 400)
   }
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS)
+
+  if (roles) {
+    const rolesEncontrados = await Role.find({ name: { $in: roles } })
+    console.log(rolesEncontrados)
+  }
 
   const userData = req.body
   userData.password = passwordHash

@@ -13,6 +13,8 @@ const verifyToken = (request) => {
   const payload = validateToken(token)
   request.userName = payload.name
   request.userId = payload.id
+  // Ver esto escrito el 2de abril
+  request.rolesId = payload.roles
 }
 
 const validateToken = (token) => {

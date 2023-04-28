@@ -9,7 +9,9 @@ const registroValidator = [
   body('username').trim().not().isEmpty().withMessage('Username is required'),
 
   body('password').trim().not().isEmpty().withMessage('Password is required')
-    .isLength({ min: 6 }).withMessage('Password must have at least 6 characters')
+    .isLength({ min: 6 }).withMessage('Password must have at least 6 characters'),
+
+  body('roles').optional({ nullable: true }).isString().withMessage('Invalid Rol')
 ]
 
 const loginValidator = [
