@@ -1,2 +1,10 @@
 PORT = XXXX
 URL_MONGO = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+JWT_SECRET_KEY = 'xxxxxxxxxxxxxxx'
+
+EMAIL_ACCOUNT = "xxxxxxxxxxxx@gmail.com"
+EMAIL_PASSWORD = "xxxxxxxxxxxxxxxxx"
+
+URL_SIGNIN= 'https://www.marca.com/'
+URL_REGISTER= 'https://www.youtube.com/'
