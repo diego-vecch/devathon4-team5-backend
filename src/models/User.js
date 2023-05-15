@@ -1,4 +1,4 @@
-const { Schema, model, version } = require('mongoose')
+const { Schema, model } = require('mongoose')
 
 const userSchema = Schema({
   name: {
@@ -28,7 +28,7 @@ const userSchema = Schema({
   },
   ratings: [{
     type: Schema.Types.ObjectId,
-    ref: 'Ratings'
+    ref: 'Rating'
   }],
   comments: [{
     type: Schema.Types.ObjectId,
@@ -70,4 +70,9 @@ const update = async (id, newUserData) => {
   return await User.findByIdAndUpdate(id, newUserData, { new: true })
 }
 
-module.exports = { findOne, findById, create, update }
+const saveRatingIntoUser = async (rating, user) => {
+  user.ratings = user.ratings.concat(rating._id)
+  await rating.save()
+}
+
+module.exports = { findOne, findById, create, update, saveRatingIntoUser }

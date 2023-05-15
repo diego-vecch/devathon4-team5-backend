@@ -1,4 +1,4 @@
-const { Schema, model, version } = require('mongoose')
+const { Schema, model } = require('mongoose')
 
 const ratingSchema = Schema({
   rating: {
@@ -11,18 +11,19 @@ const ratingSchema = Schema({
   },
   user: [{
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   }],
   place: [{
     type: Schema.Types.ObjectId,
     ref: 'Place'
   }]
 
-})
+},
+{ timestamps: true })
 
 ratingSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    delete returnedObject.password
     delete returnedObject._id
   }
 })

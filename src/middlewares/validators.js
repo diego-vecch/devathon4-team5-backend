@@ -31,4 +31,8 @@ const modifyUserValidator = [
   body('username').optional({ nullable: true }).isString().withMessage('Invalid username')
 ]
 
-module.exports = { registroValidator, loginValidator, modifyUserValidator }
+const ratingValidator = [
+  body('rating').trim().not().isEmpty().withMessage('Rating is required')
+]
+
+module.exports = { registroValidator, loginValidator, modifyUserValidator, ratingValidator }
