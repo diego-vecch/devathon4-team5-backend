@@ -1,12 +1,7 @@
 const { validationResult } = require('express-validator')
 const Rating = require('../models/Rating')
 const User = require('../models/User')
-// const Role = require('../models/Role')
 const { createResponse } = require('../utils/responseGenarator')
-const { signToken } = require('../utils/jwtOperations')
-const { initUserSeguridad, verifyUser } = require('../utils/verificationManager')
-const { sendVerificationMail } = require('../utils/emailTransporter')
-const buildHostName = require('../utils/hostManager')
 
 const USER_ERROR = 'Error getting user'
 
