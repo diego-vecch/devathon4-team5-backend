@@ -1,6 +1,10 @@
 const { Schema, model } = require('mongoose')
 
 const ratingSchema = Schema({
+  placeId: {
+    type: String,
+    required: true
+  },
   rating: {
     type: Number,
     required: true
@@ -9,16 +13,11 @@ const ratingSchema = Schema({
     type: String,
     required: false
   },
-  user: [{
+  user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  }],
-  place: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Place'
-  }]
-
+  }
 },
 { timestamps: true })
 
@@ -45,8 +44,8 @@ const create = async (newRatingData) => {
   return rating
 }
 
-const update = async (id, newRatingData) => {
+const findByIdAndUpdate = async (id, newRatingData) => {
   return await Rating.findByIdAndUpdate(id, newRatingData, { new: true })
 }
 
-module.exports = { findOne, findById, create, update }
+module.exports = { findOne, findById, create, findByIdAndUpdate }

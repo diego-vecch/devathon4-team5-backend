@@ -35,10 +35,10 @@ const userRegister = async (req) => {
   }
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS)
 
-  if (roles) {
-    const rolesEncontrados = await Role.find({ name: { $in: roles } })
-    console.log(rolesEncontrados)
-  }
+  // if (roles) {
+  //   const rolesEncontrados = await Role.find({ name: { $in: roles } })
+  //   console.log(rolesEncontrados)
+  // }
 
   const userData = req.body
   userData.password = passwordHash

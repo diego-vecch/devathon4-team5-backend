@@ -8,4 +8,6 @@ const ratingsRouter = express.Router()
 
 ratingsRouter.route('/create').post(tokenValidator, ratingValidator, ratingsController.ratingsCreate)
 
+ratingsRouter.route('/update/:id').patch(tokenValidator, ratingsController.ratingsUpdate)
+
 module.exports = ratingsRouter
