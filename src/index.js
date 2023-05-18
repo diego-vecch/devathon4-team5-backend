@@ -6,6 +6,7 @@ const app = express()
 require('dotenv').config()
 const userRouter = require('./v1/routes/userRouter.js')
 const ratingsRouter = require('./v1/routes/ratingsRouter.js')
+const mapsRouter = require('./v1/routes/mapsRouter.js')
 
 const PORT = process.env.PORT
 
@@ -14,6 +15,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/v1/users/', userRouter)
+app.use('/api/v1/maps', mapsRouter)
 app.use('/api/v1/ratings/', ratingsRouter)
 
 connection()
