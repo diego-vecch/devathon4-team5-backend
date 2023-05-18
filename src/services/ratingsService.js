@@ -27,10 +27,35 @@ const ratingsCreate = async (req) => {
   await User.saveRatingIntoUser(createdRating, userExists)
 
   data = {
+    id: createdRating.id,
     rating: createdRating
   }
 
   return createResponse(true, data, null, 201)
 }
+const ratingsUpdate = async (req) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return createResponse(false, null, errors.array(), 400)
+  }
+  const { userId } = req
+  const id = req.params.id
 
-module.exports = { ratingsCreate }
+  const ratingExists = await Rating.findOne({ _id: id, user: userId })
+
+  if (!ratingExists) {
+    return createResponse(false, null, 'Error rating not found', 401)
+  }
+
+  const { rating, comment } = req.body
+  ratingExists.rating = rating || ratingExists.rating
+  ratingExists.comment = comment || ratingExists.comment
+  const ratingUpdate = await Rating.findByIdAndUpdate(id, ratingExists)
+  const data = {
+    id: ratingUpdate.id,
+    rating: ratingUpdate
+  }
+
+  return createResponse(true, data, null, 200)
+}
+module.exports = { ratingsCreate, ratingsUpdate }
