@@ -12,12 +12,12 @@ async function maps (address) {
     const data = await response.json()
 
     const results = data.results[0]
-    const respuesta = {
+    const locationData = {
       locality: results.formatted_address,
       location: results.geometry.location,
       place_id: results.place_id
     }
-    return respuesta
+    return locationData
   } catch (error) {
     console.error(error)
   }
@@ -35,8 +35,8 @@ const autocomplete = async (req, res, next) => {
   const description = []
 
   for (const i in predictions) {
-    const prueba = (predictions[i].description)
-    description.push(await maps(prueba))
+    const address = (predictions[i].description)
+    description.push(await maps(address))
   }
 
   res.status(200).send(description)
