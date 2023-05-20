@@ -33,6 +33,11 @@ const ratingsCreate = async (req) => {
 
   return createResponse(true, data, null, 201)
 }
+
+const ratingsReader = async (req) => {
+  const data = 'todo ok en rating reader'
+  return createResponse(true, data, null, 200)
+}
 const ratingsUpdate = async (req) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
@@ -58,4 +63,4 @@ const ratingsUpdate = async (req) => {
 
   return createResponse(true, data, null, 200)
 }
-module.exports = { ratingsCreate, ratingsUpdate }
+module.exports = { ratingsCreate, ratingsReader, ratingsUpdate }
