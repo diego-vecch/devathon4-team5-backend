@@ -6,6 +6,5 @@ const mapsController = require('../../controllers/mapsController')
 const mapsRouter = express.Router()
 
 mapsRouter.route('/autocomplete').post(mapsController.autocomplete)
-mapsRouter.route('/maps').post(mapsController.maps)
 
 module.exports = mapsRouter

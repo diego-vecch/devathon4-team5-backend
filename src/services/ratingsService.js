@@ -33,6 +33,7 @@ const ratingsCreate = async (req) => {
 
   return createResponse(true, data, null, 201)
 }
+
 const ratingsUpdate = async (req) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
