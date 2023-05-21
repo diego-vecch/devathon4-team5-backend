@@ -44,8 +44,12 @@ const create = async (newRatingData) => {
   return rating
 }
 
+const deleteRating = async (data) => {
+  return await Rating.deleteOne(data)
+}
+
 const findByIdAndUpdate = async (id, newRatingData) => {
   return await Rating.findByIdAndUpdate(id, newRatingData, { new: true })
 }
 
-module.exports = { findOne, findById, create, findByIdAndUpdate }
+module.exports = { findOne, findById, create, findByIdAndUpdate,deleteRating }

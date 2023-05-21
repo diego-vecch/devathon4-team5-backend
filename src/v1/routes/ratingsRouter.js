@@ -10,4 +10,6 @@ ratingsRouter.route('/create').post(tokenValidator, ratingValidator, ratingsCont
 
 ratingsRouter.route('/update/:id').patch(tokenValidator, ratingsController.ratingsUpdate)
 
+ratingsRouter.route('/delete/:id').delete(tokenValidator, ratingsController.ratingsDelete)
+
 module.exports = ratingsRouter

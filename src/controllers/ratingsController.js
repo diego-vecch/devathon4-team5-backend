@@ -28,4 +28,18 @@ const ratingsUpdate = async (req, res, next) => {
   }
 }
 
-module.exports = { ratingsCreate, ratingsUpdate }
+const ratingsDelete = async (req, res, next) => {
+  try {
+    const { success, data, errorMsg, statusCode } = await ratingsService.ratingsDelete(req)
+    const response = {
+      success,
+      data,
+      errorMsg
+    }
+    res.status(statusCode).json(response)
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete }
