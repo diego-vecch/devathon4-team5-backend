@@ -55,7 +55,27 @@ const ratingsUpdate = async (req) => {
     id: ratingUpdate.id,
     rating: ratingUpdate
   }
+  
+  return createResponse(true, data, null, 200)
+}
+
+const ratingsDelete = async (req) => {
+  let data = null
+
+  const { userId, params } = req
+
+  const { id } = params
+
+  const ratingsDeleted = await Rating.deleteRating({ _id: id, user: userId })
+
+  if (!ratingsDeleted.deletedCount) {
+    return createResponse(false, data, 'Error ratings not found', 400)
+  }
+  data = { userId
+  }
 
   return createResponse(true, data, null, 200)
 }
-module.exports = { ratingsCreate, ratingsUpdate }
+
+module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete  }
+
