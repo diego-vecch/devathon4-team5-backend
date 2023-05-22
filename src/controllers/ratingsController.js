@@ -14,6 +14,21 @@ const ratingsCreate = async (req, res, next) => {
   }
 }
 
+// ratingsRead
+const ratingsRead = async (req, res, next) => {
+  try {
+    const { success, data, errorMsg, statusCode } = await ratingsService.ratingsUpdate(req)
+    const response = {
+      success,
+      data,
+      errorMsg
+    }
+    res.status(statusCode).json(response)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const ratingsUpdate = async (req, res, next) => {
   try {
     const { success, data, errorMsg, statusCode } = await ratingsService.ratingsUpdate(req)
@@ -42,4 +57,4 @@ const ratingsDelete = async (req, res, next) => {
   }
 }
 
-module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete }
+module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete, ratingsRead }

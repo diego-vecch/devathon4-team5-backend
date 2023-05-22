@@ -33,6 +33,18 @@ const ratingsCreate = async (req) => {
 
   return createResponse(true, data, null, 201)
 }
+
+const ratingsRead = async (req) => {
+  let data = null
+
+  const ratings = "textodeprueba"
+  data = {
+    ratings
+  }
+
+  return createResponse(true, data, null, 200)
+}
+
 const ratingsUpdate = async (req) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
@@ -55,7 +67,7 @@ const ratingsUpdate = async (req) => {
     id: ratingUpdate.id,
     rating: ratingUpdate
   }
-  
+
   return createResponse(true, data, null, 200)
 }
 
@@ -71,11 +83,12 @@ const ratingsDelete = async (req) => {
   if (!ratingsDeleted.deletedCount) {
     return createResponse(false, data, 'Error ratings not found', 400)
   }
-  data = { userId
+  data = {
+    userId
   }
 
   return createResponse(true, data, null, 200)
 }
 
-module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete  }
+module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete, ratingsRead }
 
