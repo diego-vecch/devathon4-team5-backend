@@ -41,5 +41,31 @@ const autocomplete = async (req, res, next) => {
 
   res.status(200).send(description)
 }
+async function dataCoordinates (req, res, next) {
+  const { lat, lng } = req.body
 
-module.exports = { autocomplete }
+  let data = null
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${KEY_GOOGLE_MAPS}`
+
+  try {
+    const answer = await fetch(url)
+    const information = await answer.json()
+
+    if (information.status === 'OK') {
+      const results = information.results
+      const address = results[0].formatted_address
+      const placeId = results[0].place_id
+
+      data = {
+        address, placeId
+      }
+      res.status(200).send(data)
+    } else {
+      return 'Could not get information for the specified coordinates.'
+    }
+  } catch (error) {
+    return 'Error getting information.'
+  }
+}
+
+module.exports = { autocomplete, dataCoordinates }
