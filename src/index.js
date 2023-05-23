@@ -16,8 +16,8 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/v1/users/', userRouter)
-app.use('/api/v1/maps', mapsRouter)
-app.use('/api/v1/place', placeRouter)
+app.use('/api/v1/maps/', mapsRouter)
+app.use('/api/v1/places/', placeRouter)
 app.use('/api/v1/ratings/', ratingsRouter)
 
 connection()
