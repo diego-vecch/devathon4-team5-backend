@@ -14,10 +14,9 @@ const ratingsCreate = async (req, res, next) => {
   }
 }
 
-// ratingsRead
 const ratingsRead = async (req, res, next) => {
   try {
-    const { success, data, errorMsg, statusCode } = await ratingsService.ratingsUpdate(req)
+    const { success, data, errorMsg, statusCode } = await ratingsService.ratingsRead(req)
     const response = {
       success,
       data,
