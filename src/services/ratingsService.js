@@ -19,8 +19,8 @@ const ratingsCreate = async (req, res, next) => {
     return createResponse(false, null, 'Failed to check for the existence of the Place ID', 400)
   }
   // Comprobar que si ya existe un un lugar con ese place id en nuestra base de datos
-  let placeIdExistsBBDD = await Place.findOne({ placeId: placeId })
-  placeId = { placeId: placeId }
+  let placeIdExistsBBDD = await Place.findOne({ placeId })
+  placeId = { placeId }
 
   // Si no existe en nuetra base de datos crear el lugar
   if (!placeIdExistsBBDD) {
@@ -40,12 +40,11 @@ const ratingsCreate = async (req, res, next) => {
   }
 
   body.user = userExists._id
-  console.log(body.user)
+
   body.place = placeIdExistsBBDD._id
-  console.log(body.place)
+
   const createdRating = await Rating.create(body)
-  console.log(body)
-  // await Place.saveRatingIntoPlace(createdRating, placeIdExistsBBDD._id)
+
   await User.saveRatingIntoUser(createdRating, userExists)
 
   data = {
@@ -111,4 +110,15 @@ const ratingsDelete = async (req) => {
   return createResponse(true, data, null, 200)
 }
 
-module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete, ratingsRead }
+const ratingsPlaceId = async (req) => {
+  const { id } = req.params
+  let data = null
+
+  const ratings = await Rating.find({ placeId: id })
+  data = {
+    ratings
+  }
+  return createResponse(true, data, null, 200)
+}
+
+module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete, ratingsRead, ratingsPlaceId }

@@ -14,4 +14,5 @@ ratingsRouter.route('/update/:id').patch(tokenValidator, ratingsController.ratin
 
 ratingsRouter.route('/delete/:id').delete(tokenValidator, ratingsController.ratingsDelete)
 
+ratingsRouter.route('/place/:id').get(ratingsController.ratingsPlaceId)
 module.exports = ratingsRouter
