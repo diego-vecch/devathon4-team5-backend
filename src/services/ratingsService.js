@@ -35,15 +35,12 @@ const ratingsCreate = async (req) => {
 }
 
 const ratingsRead = async (req) => {
-console.log("inespicable");
   let data = null
 
   const ratings = await Rating.find()
-  console.log(ratings);
-  data = {
+   data = {
     ratings
   }
-
   return createResponse(true, data, null, 200)
 }
 
