@@ -17,6 +17,11 @@ const ratingSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
+  },
+  place: {
+    type: Schema.Types.ObjectId,
+    ref: 'Place'
+    // required: true
   }
 },
 { timestamps: true })
