@@ -29,6 +29,10 @@ ratingSchema.set('toJSON', {
 
 const Rating = model('Rating', ratingSchema)
 
+const find = async (data) => {
+  return await Rating.find(data)
+}
+
 const findOne = async (data) => {
   return await Rating.findOne(data)
 }
@@ -52,4 +56,4 @@ const findByIdAndUpdate = async (id, newRatingData) => {
   return await Rating.findByIdAndUpdate(id, newRatingData, { new: true })
 }
 
-module.exports = { findOne, findById, create, findByIdAndUpdate,deleteRating }
+module.exports = { find, findOne, findById, create, findByIdAndUpdate,deleteRating }
