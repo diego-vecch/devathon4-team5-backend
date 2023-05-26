@@ -136,7 +136,7 @@ const ratingsPlaceId = async (req) => {
   const promedio = (totalRating / ratings.length)
   data = {
     ratings: [newRating],
-    ratingspromedio: promedio
+    averageValue: promedio
   }
   return createResponse(true, data, null, 200)
 }
