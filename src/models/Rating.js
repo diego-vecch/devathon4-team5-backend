@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const ratingSchema = Schema({
   placeId: {
@@ -25,6 +26,7 @@ const ratingSchema = Schema({
   }
 },
 { timestamps: true })
+ratingSchema.plugin(mongoosePaginate)
 
 ratingSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -61,4 +63,4 @@ const findByIdAndUpdate = async (id, newRatingData) => {
   return await Rating.findByIdAndUpdate(id, newRatingData, { new: true })
 }
 
-module.exports = { find, findOne, findById, create, findByIdAndUpdate,deleteRating }
+module.exports = { find, findOne, findById, create, findByIdAndUpdate, deleteRating }
