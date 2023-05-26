@@ -1,19 +1,32 @@
 const { validationResult } = require('express-validator')
 const Rating = require('../models/Rating')
 const User = require('../models/User')
+const Place = require('../models/Place')
 const { createResponse } = require('../utils/responseGenarator')
-
+const verifyExistencePlaceId = require('../utils/verifyExistencePlaceId')
+require('dotenv').config()
+const apiKey = process.env.KEY_GOOGLE_MAPS
 const USER_ERROR = 'Error getting user'
 
-const ratingsCreate = async (req) => {
+const ratingsCreate = async (req, res, next) => {
+  const { userId, body } = req
+  let placeId = body.placeId
+  const placeIdExists = await verifyExistencePlaceId(placeId, apiKey)
+  if (!placeIdExists) {
+    return createResponse(false, null, 'Failed to check for the existence of the Place ID', 400)
+  }
+  let placeIdExistsBBDD = await Place.findOne({ placeId })
+  placeId = { placeId }
+
+  if (!placeIdExistsBBDD) {
+    placeIdExistsBBDD = await Place.create(placeId)
+  }
   let data = null
 
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return createResponse(false, data, errors.array(), 400)
   }
-
-  const { userId, body } = req
 
   const userExists = await User.findById(userId)
 
@@ -22,15 +35,15 @@ const ratingsCreate = async (req) => {
   }
 
   body.user = userExists._id
+  body.place = placeIdExistsBBDD._id
+
   const createdRating = await Rating.create(body)
 
   await User.saveRatingIntoUser(createdRating, userExists)
-
   data = {
     id: createdRating.id,
     rating: createdRating
   }
-
   return createResponse(true, data, null, 201)
 }
 
@@ -38,7 +51,7 @@ const ratingsRead = async (req) => {
   let data = null
 
   const ratings = await Rating.find()
-   data = {
+  data = {
     ratings
   }
   return createResponse(true, data, null, 200)
@@ -72,9 +85,7 @@ const ratingsUpdate = async (req) => {
 
 const ratingsDelete = async (req) => {
   let data = null
-
   const { userId, params } = req
-
   const { id } = params
 
   const ratingsDeleted = await Rating.deleteRating({ _id: id, user: userId })
@@ -89,5 +100,45 @@ const ratingsDelete = async (req) => {
   return createResponse(true, data, null, 200)
 }
 
-module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete, ratingsRead }
+const ratingsPlaceId = async (req) => {
+  const { id } = req.params
+  let data = null
 
+  const ratings = await Rating.find({ placeId: id })
+
+  let totalRating = 0
+  const newRating = []
+
+  const getUsername = async (userId) => {
+    try {
+      const user = await User.findById(userId)
+      if (user) {
+        return user.username
+      }
+    } catch (err) {
+      console.error(err)
+    }
+    return null
+  }
+
+  for (let i = 0; i < ratings.length; i++) {
+    const valoration = {}
+    totalRating += ratings[i].rating
+    const userId = ratings[i].user
+    const userName = await getUsername(userId)
+    valoration.user = userName
+    valoration.rating = (ratings[i].rating)
+    valoration.comment = (ratings[i].comment)
+
+    newRating.push(valoration)
+  }
+
+  const promedio = (totalRating / ratings.length)
+  data = {
+    ratings: [newRating],
+    averageValue: promedio
+  }
+  return createResponse(true, data, null, 200)
+}
+
+module.exports = { ratingsCreate, ratingsUpdate, ratingsDelete, ratingsRead, ratingsPlaceId }
