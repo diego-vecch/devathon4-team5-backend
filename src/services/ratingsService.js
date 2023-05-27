@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator')
+// const mongoosePaginate = require('mongoose-paginate-v2')
 const Rating = require('../models/Rating')
 const User = require('../models/User')
 const Place = require('../models/Place')
@@ -101,13 +102,15 @@ const ratingsDelete = async (req) => {
 }
 
 const ratingsPlaceId = async (req) => {
-  const { id } = req.params
+  const { id, page, limit } = req.params
   let data = null
 
-  const ratings = await Rating.find({ placeId: id })
+  const options = {
+    page: parseInt(page, 3) || 3,
+    limit: parseInt(limit, 3) || 3
+  }
 
-  let totalRating = 0
-  const newRating = []
+  const ratings = await Rating.paginate({ placeId: id }, options)
 
   const getUsername = async (userId) => {
     try {
@@ -120,20 +123,24 @@ const ratingsPlaceId = async (req) => {
     }
     return null
   }
+  const ratingEncontrado = ratings.docs
 
-  for (let i = 0; i < ratings.length; i++) {
+  let totalRating = 0
+  const newRating = []
+
+  for (let i = 0; i < ratingEncontrado.length; i++) {
     const valoration = {}
-    totalRating += ratings[i].rating
-    const userId = ratings[i].user
+    totalRating += ratingEncontrado[i].rating
+    const userId = ratingEncontrado[i].user
     const userName = await getUsername(userId)
     valoration.user = userName
-    valoration.rating = (ratings[i].rating)
-    valoration.comment = (ratings[i].comment)
+    valoration.rating = (ratingEncontrado[i].rating)
+    valoration.comment = (ratingEncontrado[i].comment)
 
     newRating.push(valoration)
   }
 
-  const promedio = (totalRating / ratings.length)
+  const promedio = (totalRating / ratingEncontrado.length)
   data = {
     ratings: [newRating],
     averageValue: promedio

@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const userSchema = Schema({
   name: {
@@ -41,7 +42,7 @@ const userSchema = Schema({
   }]
 
 })
-
+userSchema.plugin(mongoosePaginate)
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     delete returnedObject.password
