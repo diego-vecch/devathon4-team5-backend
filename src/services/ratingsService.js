@@ -106,8 +106,8 @@ const ratingsPlaceId = async (req) => {
   let data = null
 
   const options = {
-    page: parseInt(page, 3) || 3,
-    limit: parseInt(limit, 3) || 3
+    page: parseInt(page, 10) || 1,
+    limit: parseInt(limit, 10) || 3
   }
 
   const ratings = await Rating.paginate({ placeId: id }, options)
@@ -123,27 +123,29 @@ const ratingsPlaceId = async (req) => {
     }
     return null
   }
-  const ratingEncontrado = ratings.docs
 
-  let totalRating = 0
-  const newRating = []
-
-  for (let i = 0; i < ratingEncontrado.length; i++) {
+  const newRating = await Promise.all(ratings.docs.map(async (ratingDoc) => {
     const valoration = {}
-    totalRating += ratingEncontrado[i].rating
-    const userId = ratingEncontrado[i].user
+    const userId = ratingDoc.user
     const userName = await getUsername(userId)
     valoration.user = userName
-    valoration.rating = (ratingEncontrado[i].rating)
-    valoration.comment = (ratingEncontrado[i].comment)
+    valoration.rating = ratingDoc.rating
+    valoration.comment = ratingDoc.comment
 
-    newRating.push(valoration)
-  }
+    return valoration
+  }))
 
-  const promedio = (totalRating / ratingEncontrado.length)
+  const ratingsAverage = await Rating.find({ placeId: id })
+  const totalRating = ratingsAverage.reduce((acc, curr) => acc + curr.rating, 0)
+  const average = totalRating / ratingsAverage.length
+
   data = {
-    ratings: [newRating],
-    averageValue: promedio
+    ratings: newRating,
+    averageValue: average,
+    totalPages: ratings.totalPages,
+    currentPage: ratings.page,
+    hasNextPage: ratings.hasNextPage,
+    hasPrevPage: ratings.hasPrevPage
   }
   return createResponse(true, data, null, 200)
 }
