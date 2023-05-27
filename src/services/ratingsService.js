@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator')
+// const mongoosePaginate = require('mongoose-paginate-v2')
 const Rating = require('../models/Rating')
 const User = require('../models/User')
 const Place = require('../models/Place')
@@ -101,13 +102,15 @@ const ratingsDelete = async (req) => {
 }
 
 const ratingsPlaceId = async (req) => {
-  const { id } = req.params
+  const { id, page, limit } = req.params
   let data = null
 
-  const ratings = await Rating.find({ placeId: id })
+  const options = {
+    page: parseInt(page, 10) || 1,
+    limit: parseInt(limit, 10) || 3
+  }
 
-  let totalRating = 0
-  const newRating = []
+  const ratings = await Rating.paginate({ placeId: id }, options)
 
   const getUsername = async (userId) => {
     try {
@@ -121,22 +124,28 @@ const ratingsPlaceId = async (req) => {
     return null
   }
 
-  for (let i = 0; i < ratings.length; i++) {
+  const newRating = await Promise.all(ratings.docs.map(async (ratingDoc) => {
     const valoration = {}
-    totalRating += ratings[i].rating
-    const userId = ratings[i].user
+    const userId = ratingDoc.user
     const userName = await getUsername(userId)
     valoration.user = userName
-    valoration.rating = (ratings[i].rating)
-    valoration.comment = (ratings[i].comment)
+    valoration.rating = ratingDoc.rating
+    valoration.comment = ratingDoc.comment
 
-    newRating.push(valoration)
-  }
+    return valoration
+  }))
 
-  const promedio = (totalRating / ratings.length)
+  const ratingsAverage = await Rating.find({ placeId: id })
+  const totalRating = ratingsAverage.reduce((acc, curr) => acc + curr.rating, 0)
+  const average = totalRating / ratingsAverage.length
+
   data = {
-    ratings: [newRating],
-    averageValue: promedio
+    ratings: newRating,
+    averageValue: average,
+    totalPages: ratings.totalPages,
+    currentPage: ratings.page,
+    hasNextPage: ratings.hasNextPage,
+    hasPrevPage: ratings.hasPrevPage
   }
   return createResponse(true, data, null, 200)
 }

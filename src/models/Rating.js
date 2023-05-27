@@ -1,7 +1,7 @@
-const { Schema, model } = require('mongoose')
+const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2')
 
-const ratingSchema = Schema({
+const ratingSchema = mongoose.Schema({
   placeId: {
     type: String,
     required: true
@@ -15,18 +15,17 @@ const ratingSchema = Schema({
     required: false
   },
   user: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
   place: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Place'
     // required: true
   }
 },
 { timestamps: true })
-ratingSchema.plugin(mongoosePaginate)
 
 ratingSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -34,7 +33,8 @@ ratingSchema.set('toJSON', {
   }
 })
 
-const Rating = model('Rating', ratingSchema)
+ratingSchema.plugin(mongoosePaginate)
+const Rating = mongoose.model('Rating', ratingSchema)
 
 const find = async (data) => {
   return await Rating.find(data)
@@ -59,8 +59,12 @@ const deleteRating = async (data) => {
   return await Rating.deleteOne(data)
 }
 
+const paginate = async (page, limit) => {
+  return await Rating.paginate(page, limit)
+}
+
 const findByIdAndUpdate = async (id, newRatingData) => {
   return await Rating.findByIdAndUpdate(id, newRatingData, { new: true })
 }
 
-module.exports = { find, findOne, findById, create, findByIdAndUpdate, deleteRating }
+module.exports = { find, findOne, findById, create, findByIdAndUpdate, deleteRating, paginate }

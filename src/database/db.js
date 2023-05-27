@@ -6,7 +6,11 @@ const BBDD_URI = process.env.URL_MONGO
 
 const connection = async () => {
   try {
-    mongoose.connect(BBDD_URI)
+    mongoose.connect(BBDD_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+
     console.log('connect to database')
   } catch (error) {
     console.log(error)

@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const placeSchema = new Schema({
   placeId: {
@@ -17,7 +18,7 @@ placeSchema.set('toJSON', {
     delete returnedObject._id
   }
 })
-
+placeSchema.plugin(mongoosePaginate)
 const Place = model('Place', placeSchema)
 
 const findOne = async (data) => {
