@@ -1,4 +1,5 @@
-const https = require('https')
+const fetch = require('node-fetch')
+const searchPlaceById = require('../utils/searchPlaceById')
 require('dotenv').config()
 
 const KEY_GOOGLE_MAPS = process.env.KEY_GOOGLE_MAPS
@@ -6,34 +7,37 @@ const KEY_GOOGLE_MAPS = process.env.KEY_GOOGLE_MAPS
 const accessibilityWheelchair = async (req, res, next) => {
   const { place } = req.body
 
-  const placeId = async (req, res, nex) => {
+  const getPlaceId = async (place) => {
     try {
       const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${place}&inputtype=textquery&inputtype=textquery&key=${KEY_GOOGLE_MAPS}`
-      const resp = await fetch(url)
-      const data = await resp.json()
-      const id = await data.candidates[0].place_id
+      const response = await fetch(url)
+      const data = await response.json()
+      console.log(data)
+      const id = data.candidates[0].place_id
       return id
     } catch (error) {
       console.log(error)
+      throw new Error('Failed to retrieve place ID')
     }
   }
-  const idplaces = placeId()
-  const id = await idplaces
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${id}&key=${KEY_GOOGLE_MAPS}`
 
-  https.get(url, (response) => {
-    let data = ''
+  try {
+    const id = await getPlaceId(place)
+    const data = await searchPlaceById(id)
 
-    response.on('data', (chunk) => {
-      data += chunk
+    res.status(200).send({
+      success: true,
+      data,
+      error: null
     })
-
-    response.on('end', () => {
-      res.status(200).json(JSON.parse(data))
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({
+      success: false,
+      data: null,
+      error: 'Internal Server Error'
     })
-  }).on('error', () => {
-    res.status(500).send('Internal Server Error')
-  })
+  }
 }
 
 module.exports = { accessibilityWheelchair }
