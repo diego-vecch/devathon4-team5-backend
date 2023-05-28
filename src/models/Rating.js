@@ -63,4 +63,4 @@ const findByIdAndUpdate = async (id, newRatingData) => {
   return await Rating.findByIdAndUpdate(id, newRatingData, { new: true })
 }
 
-module.exports = { find, findOne, findById, create, findByIdAndUpdate, deleteRating }
+module.exports = { find, findOne, findById, create, findByIdAndUpdate, deleteRating}
