@@ -10,42 +10,57 @@ const apiKey = process.env.KEY_GOOGLE_MAPS
 const USER_ERROR = 'Error getting user'
 
 const ratingsCreate = async (req, res, next) => {
-  const { userId, body } = req
-  let placeId = body.placeId
-  const placeIdExists = await verifyExistencePlaceId(placeId, apiKey)
-  if (!placeIdExists) {
-    return createResponse(false, null, 'Failed to check for the existence of the Place ID', 400)
+  try {
+    const { userId, body } = req
+    const { placeId } = body
+
+    // Verificar existencia de placeId
+    const placeIdExists = await verifyExistencePlaceId(placeId, apiKey)
+    if (!placeIdExists) {
+      return createResponse(false, null, 'Failed to check for the existence of the Place ID', 400)
+    }
+
+    // Comprobar si placeId existe en la base de datos
+    let place = await Place.findOne({ placeId })
+    if (!place) {
+      place = await Place.create({ placeId })
+    }
+
+    // Validar errores
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return createResponse(false, null, errors.array(), 400)
+    }
+
+    // Comprobar si el usuario existe
+    const user = await User.findById(userId)
+    if (!user) {
+      return createResponse(false, null, USER_ERROR, 400)
+    }
+
+    // Comprobar si la valoración ya existe
+    const ratingExists = await Rating.findOne({ place: place._id, user: userId })
+    if (ratingExists) {
+      return createResponse(false, null, 'Error creating rating', 401)
+    }
+
+    // Crear la valoración
+    const createdRating = await Rating.create({ ...body, user: user._id, place: place._id })
+
+    // Guardar la valoración en el usuario
+    await User.saveRatingIntoUser(createdRating, user)
+
+    const data = {
+      id: createdRating.id,
+      rating: createdRating
+    }
+
+    return createResponse(true, data, null, 201)
+  } catch (error) {
+    // Manejar errores
+    console.error(error)
+    return createResponse(false, null, 'An error occurred', 500)
   }
-  let placeIdExistsBBDD = await Place.findOne({ placeId })
-  placeId = { placeId }
-
-  if (!placeIdExistsBBDD) {
-    placeIdExistsBBDD = await Place.create(placeId)
-  }
-  let data = null
-
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    return createResponse(false, data, errors.array(), 400)
-  }
-
-  const userExists = await User.findById(userId)
-
-  if (!userExists) {
-    return createResponse(false, data, USER_ERROR, 400)
-  }
-
-  body.user = userExists._id
-  body.place = placeIdExistsBBDD._id
-
-  const createdRating = await Rating.create(body)
-
-  await User.saveRatingIntoUser(createdRating, userExists)
-  data = {
-    id: createdRating.id,
-    rating: createdRating
-  }
-  return createResponse(true, data, null, 201)
 }
 
 const ratingsRead = async (req) => {
