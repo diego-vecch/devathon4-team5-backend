@@ -1,2 +1,13 @@
-PORT = XXXX
-URL_MONGO = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+PORT = xxxx
+URL_MONGO = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+JWT_SECRET_KEY = 'xxxxxxxxxxxx'
+
+EMAIL_ACCOUNT = "xxxxxxxxxxxxxxxxxxxxxxxxx"
+EMAIL_PASSWORD = "xxxxxxxxxxxxxxxxxxxx"
+
+URL_SIGNIN= 'https://xxxxxxxxxxxx/'
+URL_REGISTER= 'https://xxxxxxxxxxxx/'
+
+
+KEY_GOOGLE_MAPS = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
