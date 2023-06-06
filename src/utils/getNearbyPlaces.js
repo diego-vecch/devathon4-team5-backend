@@ -20,13 +20,4 @@ async function getNearbyPlaces (radio, lat, lng) {
   }
 }
 
-// Llamar a la función para obtener los lugares cercanos a las coordenadas
-// const latitud = 40.7128 // Latitud de ejemplo
-// const longitud = -74.0060 // Longitud de ejemplo
-// const radio = 1000 // Radio de búsqueda en metros
-
-// getNearbyPlaces(latitud, longitud, radio).then(lugares => {
-//   console.log(lugares)
-// })
-
 module.exports = getNearbyPlaces
