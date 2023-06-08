@@ -58,7 +58,6 @@ const ratingsCreate = async (req, res, next) => {
     return createResponse(true, data, null, 201)
   } catch (error) {
     // Manejar errores
-    console.error(error)
     return createResponse(false, null, 'An error occurred', 500)
   }
 }
