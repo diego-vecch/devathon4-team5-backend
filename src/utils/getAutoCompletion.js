@@ -8,6 +8,7 @@ async function getAutoCompletion (consulta) {
     // Verificar si la solicitud fue exitosa
     if (respuesta.ok) {
       const opciones = await respuesta.json()
+      console.log(opciones)
 
       // Filtrar las primeras 10 opciones
       const opcionesAutocompletado = opciones.slice(0, 10).map(opcion => {
