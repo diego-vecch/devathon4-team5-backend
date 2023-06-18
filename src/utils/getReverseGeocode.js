@@ -2,7 +2,7 @@
 const fetch = require('node-fetch')
 
 async function getReverseGeocode (lat, lng) {
-  const apiKey = 'l-5L4-vYrhzQ4sQ2lncqE1mh_24L0Gmh-zkpbkaeVVY'
+  const apiKey = process.env.API_KEY_HERE
   const url = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat}%2C${lng}&lang=en-US&apiKey=${apiKey}`
 
   try {

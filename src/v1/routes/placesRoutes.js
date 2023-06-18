@@ -4,6 +4,9 @@ const placeController = require('../../controllers/placeController')
 const placesRouter = express.Router()
 
 placesRouter.route('/accessibility-wheelchair').post(placeController.wheelchairAccessibilityController)
+
+
+placesRouter.route('/search-by-id').post(placeController.searchPlaceByIdController)
 // const https = require('https')
 
 // plcesRouter.post('/wheelchair', (req, res) => {

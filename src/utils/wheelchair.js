@@ -1,8 +1,9 @@
 const fetch = require('node-fetch')
 
+const appToken = process.env.APP_TOKEN_ACCESSIBILITY_CLOUD
 async function wheelchair (lat, lng, accuracy) {
   try {
-    const response = await fetch(`https://accessibility-cloud.freetls.fastly.net/place-infos?appToken=c36009d4fabcc8b6c46a1c1f292c4d46&latitude=${lat}&longitude=${lng}&accuracy=${accuracy}`, {
+    const response = await fetch(`https://accessibility-cloud.freetls.fastly.net/place-infos?appToken=${appToken}&latitude=${lat}&longitude=${lng}&accuracy=${accuracy}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json'
@@ -15,8 +16,5 @@ async function wheelchair (lat, lng, accuracy) {
     console.error(error)
   }
 }
-
-// Ejemplo de uso:
-// wheelchair(48.251, 16.5, 10000)
 
 module.exports = wheelchair
