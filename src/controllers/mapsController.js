@@ -1,11 +1,11 @@
 // const fetch = require('node-fetch')
 const getAutoCompletion = require('../utils/getAutoCompletion')
-const getInformationPlace = require('../utils/gtInformationPlace')
+const getReverseGeocode = require('../utils/getReverseGeocode')
 
 const autocomplete = async (req, res) => {
-  const { input } = req.body
+  const { query } = req.body
   try {
-    const opciones = await getAutoCompletion(input)
+    const opciones = await getAutoCompletion(query)
     res.send(opciones)
   } catch (error) {
     console.log('Error:', error)
@@ -14,9 +14,9 @@ const autocomplete = async (req, res) => {
 }
 
 const dataCoordinate = async (req, res) => {
-  const { lat, lon } = req.body
+  const { lat, lng } = req.body
 
-  getInformationPlace(lat, lon)
+  getReverseGeocode(lat, lng)
     .then((information) => {
       res.send(information)
     })
